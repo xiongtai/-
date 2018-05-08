@@ -1,0 +1,282 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+    <script src="~/Scripts/jquery.easyui-1.4.5.min.js"></script>
+    <script src="~/Scripts/datapattern.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#addDiv").css("display", "none");
+            $("#editDiv").css("display", "none");
+            loadData();
+            validateInfo();
+        });
+        function loadData() {
+            $("#tt").datagrid({
+                url: "/UserInfo/GetUserInfoList",
+                title: "User Data Table",
+                width: 700,
+                height: 400,
+                fitColumns: true,
+                nowrap: false,
+                idField: "Id",
+                loadMsg: "It is loading data...",
+                pagination: true,
+                singleSelect: false,
+                pageSize: 2,
+                pageNumber: 1,
+                pageList: [2, 5, 10],
+                queryParams: {}, 
+                columns: [[
+                    { field: "ck", checkbox: true, align: "ledt", width: 50 },
+                    { field: "Id", title: "ID", width: 80 },
+                    { field: "UName", title: "Name", width: 120 },
+                    { field: "UPwd", title: "Pwd", width: 120 },
+                    { field: "Email", title: "EMail", width: 120 },
+                    {
+                        field: "Time", title: "Time", width: 80, align: "right",
+                        formatter: function (value, row, index) {
+                            return (eval(value.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"))).pattern("yyyy-M-d");
+                        }
+                    }
+                ]],
+                toolbar: [{
+                    id: "btnDelete",
+                    text: "删除",
+                    iconCls: "icon-remove",
+                    handler: function () {
+                        deleteInfo();
+                    }
+                }, {
+                    id: "btnAdd",
+                    text: "添加",
+                    iconCls: "icon-add",
+                    handler: function () {
+                        addInfo();
+                    }
+                }, {
+                    id: "btnEdit",
+                    text: "编辑",
+                    iconCls: "icon-edit",
+                    handler: function () {
+                        showEditInfo();
+                    }
+                }],
+            });
+
+            function deleteInfo() {
+                var rows = $("#tt").datagrid("getSelections");
+                if (!rows || rows.length == 0) {
+                    $.messager.alert("提醒", "请选择要删除的记录!", "error");
+                    return;
+                }
+
+                $.messager.confirm("提示", "确定要删除数据吗", function (r) {
+                    if (r) {
+                        var rowsLength = rows.length;
+                        var strId = "";
+                        for (var i = 0; i < rowsLength; i++) {
+                            strId = strId + rows[i].Id + ",";
+                        }
+                        strId = strId.substr(0, strId.length - 1);
+                        $.post("/UserInfo/DeleteUserInfo", { strId: strId }, function (data) {
+                            if (data == "OK") {
+                                $("#tt").datagrid("reload");
+                                $("#tt").datagrid("clearSelections");
+                            }
+                            else if (data == "NO") {
+                                $.messager.alert("提示", "删除失败");
+                            }
+                            else {
+                                $.messager.alert("提示", "未知错误，稍后重试");
+                            }
+                        })
+                    }
+                })
+            }
+            function addInfo() {
+                $("#addDiv").css("display", "block");
+                $("#addDiv").dialog({
+                    title: "Add User",
+                    width: 300,
+                    height: 200,
+                    maximizable: true,
+                    resizable: true,
+                    modal: true,
+                    buttons: [{
+                        text: "ok",
+                        iconCls: "icon-ok",
+                        handler: function () {
+                            $("#addForm").submit();
+                        }
+                    }, {
+                        text: "cancel",
+                        iconCls: "icon-cancel",
+                        handler: function () {
+                            $("#addDiv").dialog("close");
+                        }
+                    }]
+                })
+            }
+            function showEditInfo() {
+                var rows = $("#tt").datagrid("getSelections");
+                if (rows.length != 1) {
+                    $.messager.alert("提示", "请选择一行要修改的数据", "error");
+                    return;
+                }
+                var id = rows[0].Id;
+                $.post("/UserInfo/ShowEditInfo", { "id": id }, function (data) {
+                    $("#txtUserName").val(data.UserName);
+                    $("#txtUserPass").val(data.UserPass);
+                    $("#txtEMail").val(data.EMail);
+                    $("#txtRegTime").val(changeDateFormat(data.RegTime));
+                    $("#txtDelFlag").val(data.DelFlag);
+                    $("#txtId").val(data.Id);
+                })
+                $("#editDiv").css("display", "block");
+                $("#editDiv").dialog({
+                    title: "编辑用户数据",
+                    width: 300,
+                    height: 200,
+                    maximizable: true,
+                    resizable: true,
+                    modal: true,
+                    buttons: [{
+                        text: "OK",
+                        iconCls: "icon-ok",
+                        handler: function () {
+                            $("#editForm").submit();
+                        }
+                    }, {
+                        text: "cancel",
+                        iconCls: "icon-cancel",
+                        handler: function () {
+                            $("#editDiv").dialog("close");
+                        }
+                    }]
+                })
+            }
+            function editInfo() {
+
+            }
+        }
+        function afterAdd(data) {
+            if (data == "OK") {
+                $("#addDiv").dialog("close");
+                $("#tt").datagrid("reload");
+                $("#addDiv input").text("");
+            }
+        }
+        function afterEdit(data) {
+            if (data == "OK") {
+                $("#editDiv").dialog("close");
+                $("#tt").datagrid("reload");
+            }
+            else {
+                $.messager.alert("提示", "修改数据失败", "error");
+            }
+        }
+
+        function validateInfo() {
+            $("#addForm").validate({
+                rules: {
+                    UserName: "required",
+                    UserPass: {
+                        required: true,
+                        minlength: 5
+                    },
+                    EMail: {
+                        required: true,
+                        email: true
+                    }
+                },
+                messages: {
+                    UserName: "Please input the user's name",
+                    UserPass: {
+                        required: "Please input the user's pwd",
+                        minlength: "Please input more than 5 words"
+                    },
+                    Email: {
+                        required: "Please input the Email",
+                        email: "Please input a correct Email address"
+                    }
+                }
+            })
+
+        }
+        function changeDateFormat(cellval) {
+            var date = new Date(parseInt(cellval.replace("/Date(", "").replace(")/", ""), 10));
+            var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+            var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+            return date.getFullYear() + "-" + month + "-" + currentDate;
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <table id="tt" style="width:700px;" title="标题，可以使用代码进行初始化，也可以通过属性设置" iconcls="icon-edit"></table>
+    </div>
+    <div id="addDiv">
+        @using (Ajax.BeginForm("AddUserInfo", "UserInfo", new { }, new AjaxOptions()
+        {
+            HttpMethod = "POST",
+            OnSuccess = "afterAdd"
+        }, new { id = "addForm" }))
+        {
+            <table>
+                <tr>
+                    <td>User Name:</td>
+                    <td><input type="text" name="UserName" /></td>
+                </tr>
+                <tr>
+                    <td>User Pwd:</td>
+                    <td><input type="password" name="UserPass" /></td>
+                </tr>
+                <tr>
+                    <td>EMail:</td>
+                    <td><input type="text" name="EMail" /></td>
+                </tr>
+            </table>
+
+        }
+    </div>
+
+    <div id="editDiv">
+        @using (Ajax.BeginForm("EditUserInfo", "UserInfo", new { },
+        new AjaxOptions() { HttpMethod = "post", OnSuccess = "afterEdit" },
+        new { id = "editForm" }))
+        {
+
+            <table>
+                <tr>
+                    <td>User Name:</td>
+                    <td><input type="text" name="UserName" id="txtUserName" /></td>
+                </tr>
+                <tr>
+                    <td>User Pwd:</td>
+                    <td><input type="password" name="UserPass" id="txtUserPass" /></td>
+                </tr>
+                <tr>
+                    <td>EMail:</td>
+                    <td><input type="text" name="EMail" id="txtEMail" /></td>
+                </tr>
+            </table>
+            <input type="hidden" name="Id" id="txtId" />
+            <input type="hidden" name="RegTime" id="txtRegTime" />
+            <input type="hidden" name="DelFlag" id="txtDelFlag" />
+        }
+    </div>
+</body>
+</html>

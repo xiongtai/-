@@ -1,0 +1,10 @@
+﻿<objects xmlns="http://www.springframework.net">
+  <description>A example that demonstarates simple IOC features</description>
+  <object name="UserInfoService" type="SpringNet.UserInfoService,SpringNet">
+    <property name="UserName" value="fdsa"/>
+    <property name="Person" ref="Person"/>
+  </object>
+  <object name="Person" type="SpringNet.Person,SpringNet">
+    <property name="Age" value="12"/>
+  </object>
+</objects>
