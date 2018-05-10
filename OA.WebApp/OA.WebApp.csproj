@@ -162,6 +162,7 @@
     <Content Include="Content\Images\logo.gif" />
     <Content Include="Content\Images\Program Files Folder.png" />
     <Content Include="Content\Images\Xp-G5 006.png" />
+    <Content Include="Content\Images\XT.png" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\themes\black\accordion.css" />
     <Content Include="Content\themes\black\calendar.css" />
