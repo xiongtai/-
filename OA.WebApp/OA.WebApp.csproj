@@ -56,6 +56,15 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.dll.0.85.4.369\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Memcached.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42c0400964dcc297, processorArchitecture=MSIL">
+      <HintPath>..\packages\Memcached.Client.1.0.0\lib\Memcached.Client.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0-preview\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -137,6 +146,22 @@
     </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\3DSMAX.png" />
+    <Content Include="Content\Images\7_7.jpg" />
+    <Content Include="Content\Images\Alien Folder.png" />
+    <Content Include="Content\Images\applebg.jpg" />
+    <Content Include="Content\Images\bg.png" />
+    <Content Include="Content\Images\bg3.png" />
+    <Content Include="Content\Images\big.png" />
+    <Content Include="Content\Images\blue_glow.jpg" />
+    <Content Include="Content\Images\login\HeadBack.jpg" />
+    <Content Include="Content\Images\login\login-btn.gif" />
+    <Content Include="Content\Images\login\panel-c.gif" />
+    <Content Include="Content\Images\login\panel-f.gif" />
+    <Content Include="Content\Images\login\panel-h.gif" />
+    <Content Include="Content\Images\logo.gif" />
+    <Content Include="Content\Images\Program Files Folder.png" />
+    <Content Include="Content\Images\Xp-G5 006.png" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\themes\black\accordion.css" />
     <Content Include="Content\themes\black\calendar.css" />
@@ -472,6 +497,7 @@
     <Content Include="Content\themes\metro\validatebox.css" />
     <Content Include="Content\themes\metro\window.css" />
     <Content Include="Content\themes\mobile.css" />
+    <Content Include="Error.html" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\themes\material\images\Thumbs.db" />
@@ -526,6 +552,9 @@
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\UserInfoController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -540,6 +569,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\UserInfo\Index.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Home\HomePage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -549,11 +580,17 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Logs\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OA.BLL\OA.BLL.csproj">
       <Project>{AFFAD20F-E952-44B3-A2E8-CD6ADFA1E781}</Project>
       <Name>OA.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OA.Common\OA.Common.csproj">
+      <Project>{abb1cdb4-b317-4587-801f-45630bfe7601}</Project>
+      <Name>OA.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\OA.IBLL\OA.IBLL.csproj">
       <Project>{8D0D0129-F210-493B-A4C3-8324227359D5}</Project>

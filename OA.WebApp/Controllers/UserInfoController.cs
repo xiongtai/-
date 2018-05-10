@@ -9,7 +9,7 @@ using OA.IBLL;
 
 namespace OA.WebApp.Controllers
 {
-    public class UserInfoController : Controller
+    public class UserInfoController : BaseController
     {
         public UserInfoService UserService { get; set; }
         // GET: UserInfo
@@ -83,6 +83,13 @@ namespace OA.WebApp.Controllers
             {
                 return Content("NO");
             }
+        }
+
+        public ActionResult Test()
+        {
+            int i = 0;
+            int a = 2 / i;
+            return Content("test");
         }
     }
 }

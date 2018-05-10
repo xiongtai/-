@@ -3,4 +3,7 @@
   <object type="OA.WebApp.Controllers.UserInfoController,OA.WebApp" singleton="flase">
     <property name="UserService" ref="UserInfoService"/>
   </object>
+  <object type="OA.WebApp.Controllers.LoginController,OA.WebApp" singleton="flase">
+    <property name="UserService" ref="UserInfoService"/>
+  </object>
 </objects>
